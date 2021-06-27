@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FizzBuzz</string>
+    <string name="entree_text">Enter three integers int1, int2 and limit, and two strings str1 and str2</string>
+    <string name="hint_first_int">int1</string>
+    <string name="hint_second_int">int2</string>
+    <string name="hint_limit_edit">limit</string>
+    <string name="hint_first_string">str1</string>
+    <string name="hint_second_string">str2</string>
+    <string name="launch_result_text">Launch result</string>
+</resources>

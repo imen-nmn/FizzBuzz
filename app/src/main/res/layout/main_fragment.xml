@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="mainViewModel"
+            type="com.inoomene.fizzbuzz.ui.MainViewModel" />
+    </data>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainFragment"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/entree_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/entree_text"
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/first_int_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@={mainViewModel.firstIntLiveData}"
+        app:layout_constraintTop_toBottomOf="@+id/entree_info"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="@string/hint_first_int"
+        android:importantForAutofill="no" />
+
+
+    <EditText
+        android:id="@+id/second_int_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/first_int_edit_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:inputType="number"
+        android:text="@={mainViewModel.secondIntLiveData}"
+        android:hint="@string/hint_second_int"
+        android:importantForAutofill="no"/>
+
+    <EditText
+        android:id="@+id/limit_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@+id/second_int_edit_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@={mainViewModel.limitIntLiveData}"
+        android:hint="@string/hint_limit_edit"
+        android:importantForAutofill="no"/>
+
+    <EditText
+        android:id="@+id/first_string_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/limit_edit_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="@string/hint_first_string"
+        android:text="@={mainViewModel.firstStringLiveData}"
+        android:importantForAutofill="no"/>
+
+    <EditText
+        android:id="@+id/second_string_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/first_string_edit_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="@string/hint_second_string"
+        android:text="@={mainViewModel.secondStringLiveData}"
+        android:importantForAutofill="no"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/resultButton"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        app:layout_constraintTop_toBottomOf="@+id/second_string_edit_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/launch_result_text"
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="@{() -> mainViewModel.onLaunchResultClicked()}"
+        android:background="@color/light_orange"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/resultCard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="@dimen/card_corner_radius">
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@{mainViewModel.resultLiveData}"
+            android:padding="8dp"
+            tools:text="MainFragment jhgdjhjhjd jhbfjhbfdkjg ihgdhjdb"
+            android:layout_marginTop="16dp"/>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -4,7 +4,8 @@
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="light_orange">#fe9549</color>
-    <color name="dark_orange">#d90015</color>
-    <color name="black">#FF000000</color>
+    <color name="dark_orange">#fe9f5b</color>
+    <color name="black">#2B2B2B</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="result_background">#3C3F41</color>
 </resources>

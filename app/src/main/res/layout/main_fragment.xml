@@ -72,6 +72,8 @@
         app:layout_constraintTop_toBottomOf="@+id/limit_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:inputType="text"
+        android:imeOptions="actionNext"
         android:hint="@string/hint_first_string"
         android:text="@={mainViewModel.firstStringLiveData}"
         android:importantForAutofill="no"/>
@@ -83,6 +85,8 @@
         app:layout_constraintTop_toBottomOf="@+id/first_string_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:inputType="text"
+        android:imeOptions="actionDone"
         android:hint="@string/hint_second_string"
         android:text="@={mainViewModel.secondStringLiveData}"
         android:importantForAutofill="no"/>
@@ -109,6 +113,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resultButton"
@@ -120,9 +125,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@{mainViewModel.resultLiveData}"
+            android:background="@color/result_background"
             android:padding="8dp"
-            tools:text="MainFragment jhgdjhjhjd jhbfjhbfdkjg ihgdhjdb"
-            android:layout_marginTop="16dp"/>
+            android:scrollbars = "vertical"
+            android:textColor="@color/white"
+            tools:text="MainFragment jhgdjhjhjd jhbfjhbfdkjg ihgdhjdb"/>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

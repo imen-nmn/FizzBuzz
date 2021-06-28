@@ -2,6 +2,7 @@ package com.inoomene.fizzbuzz.ui
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         binding.mainViewModel = viewModel
+        binding.result.movementMethod = ScrollingMovementMethod()
         return binding.root
     }
 

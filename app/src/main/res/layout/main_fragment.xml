@@ -9,11 +9,13 @@
             type="com.inoomene.fizzbuzz.ui.MainViewModel" />
     </data>
 
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".ui.MainFragment"
     android:padding="16dp">
 
@@ -90,6 +92,17 @@
         android:hint="@string/hint_second_string"
         android:text="@={mainViewModel.secondStringLiveData}"
         android:importantForAutofill="no"/>
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:indeterminate="true"
+        android:visible="@{mainViewModel.loadingResult}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/resultButton"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/resultButton"
@@ -107,23 +120,15 @@
         android:textColor="@android:color/white"
         android:layout_marginTop="16dp" />
 
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/loading"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:indeterminate="true"
-        android:visible="@{mainViewModel.loadingResult}"
-        app:layout_constraintEnd_toEndOf="@+id/resultCard"
-        app:layout_constraintTop_toTopOf="@+id/resultCard" />
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/resultCard"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:visible="@{mainViewModel.showResult}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resultButton"
@@ -133,14 +138,14 @@
         <TextView
             android:id="@+id/result"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@{mainViewModel.resultLiveData}"
             android:background="@color/result_background"
             android:padding="8dp"
-            android:scrollbars = "vertical"
             android:textColor="@color/white"
             tools:text="MainFragment jhgdjhjhjd jhbfjhbfdkjg ihgdhjdb"/>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
 </layout>

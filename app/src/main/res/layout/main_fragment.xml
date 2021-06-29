@@ -107,6 +107,16 @@
         android:textColor="@android:color/white"
         android:layout_marginTop="16dp" />
 
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/loading"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:indeterminate="true"
+        android:visible="@{mainViewModel.loadingResult}"
+        app:layout_constraintEnd_toEndOf="@+id/resultCard"
+        app:layout_constraintTop_toTopOf="@+id/resultCard" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/resultCard"

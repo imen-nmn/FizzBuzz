@@ -12,19 +12,22 @@ class MainViewModel : ViewModel() {
    var firstStringLiveData = MutableLiveData<String>()
    var secondStringLiveData = MutableLiveData<String>()
    var resultLiveData = MutableLiveData<String>()
+   var loadingResult : MutableLiveData<Boolean> = MutableLiveData()
+   var job:Job? = null
 
 
     fun onLaunchResultClicked(){
       resultLiveData.value = ""
+      loadingResult.value = true
+        job?.cancel()
       if (checkAllFieldFilled()) {
-          CoroutineScope(Dispatchers.IO).launch {
+          job = CoroutineScope(Dispatchers.IO).launch {
               doProcess()
           }
       } else {
           resultLiveData.value = "Please fill all the fields !! "
       }
-   }
-
+    }
 
     private fun doProcess(){
         val int1 = firstIntLiveData.value?.toIntOrNull() ?: 0
@@ -32,9 +35,8 @@ class MainViewModel : ViewModel() {
         val limit = limitIntLiveData.value?.toIntOrNull() ?: 0
         val str1 = firstStringLiveData.value ?: ""
         val str2 = secondStringLiveData.value ?: ""
-
         val result = applyFizzBuzz(int1, int2, limit , str1, str2)
-        setResultLiveData(result)
+        setResultLiveDataInMain(result)
     }
 
     private fun applyFizzBuzz( int1: Int,
@@ -57,9 +59,10 @@ class MainViewModel : ViewModel() {
     }
 
 
-    private fun setResultLiveData( result: String){
+    private fun setResultLiveDataInMain(result: String){
         CoroutineScope(Dispatchers.Main).launch {
             resultLiveData.value = result
+            loadingResult.value = false
         }
     }
 
@@ -71,4 +74,9 @@ class MainViewModel : ViewModel() {
       if (secondStringLiveData.value.isNullOrEmpty()) return false
       return true
    }
+
+    override fun onCleared() {
+        super.onCleared()
+        job?.cancel()
+    }
 }

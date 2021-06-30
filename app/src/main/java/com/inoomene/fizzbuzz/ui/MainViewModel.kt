@@ -1,6 +1,5 @@
 package com.inoomene.fizzbuzz.ui
 
-import android.graphics.Color
 import android.text.SpannableString
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,8 @@ import com.inoomene.fizzbuzz.data.FizzBuzzWarning
 import com.inoomene.fizzbuzz.data.Output
 import com.inoomene.fizzbuzz.utils.add
 import com.inoomene.fizzbuzz.utils.percent
-import com.inoomene.fizzbuzz.utils.toSpannableString
+import com.inoomene.fizzbuzz.utils.toColoredSpanned
+import com.inoomene.fizzbuzz.utils.toHtmlFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -66,33 +66,86 @@ class MainViewModel : ViewModel() {
         str1: String,
         str2: String
     ): Output {
+        return if (limit > BIG_NUMBER)
+            applyFizzWithoutColor(int1, int2, limit, str1, str2)
+        else
+            applyFizzWithColor(int1, int2, limit, str1, str2)
+
+    }
+
+    private fun applyFizzWithoutColor(
+        int1: Int,
+        int2: Int,
+        limit: Int,
+        str1: String,
+        str2: String
+    ): Output {
+        var firstStrOccurrence = 0
+        var secondStrOccurrence = 0
+        var concatStrOccurrence = 0
+        var sequence: CharSequence = StringBuffer()
+        for (i in 1..limit) {
+            sequence = if (i % int1 == 0 && i % int2 == 0) {
+                concatStrOccurrence++
+                "$sequence $str1$str2"
+            } else if (i % int2 == 0) {
+                secondStrOccurrence++
+                "$sequence $str2"
+            } else if (i % int1 == 0) {
+                firstStrOccurrence++
+                "$sequence $str1"
+            } else {
+                "$sequence $i"
+            }
+
+            if (i % 1000 == 0)
+                setResultProgressingInMain("${i.percent(limit)}% Processing .. $i from $limit")
+        }
+        return Output(
+            sequence.trim().toHtmlFormat(),
+            firstStrOccurrence,
+            secondStrOccurrence,
+            concatStrOccurrence
+        )
+    }
+
+    private fun applyFizzWithColor(
+        int1: Int,
+        int2: Int,
+        limit: Int,
+        str1: String,
+        str2: String
+    ): Output {
         var sequence: CharSequence = StringBuffer()
         var firstStrOccurrence = 0
         var secondStrOccurrence = 0
         var concatStrOccurrence = 0
         for (i in 1..limit) {
             if (i % int1 == 0 && i % int2 == 0) {
-                sequence = sequence.add(" $str1$str2".toSpannableString(Color.GREEN))
+                sequence = sequence.add(" $str1$str2".toColoredSpanned("#fcba03"))
                 concatStrOccurrence++
             } else if (i % int2 == 0) {
-                sequence = sequence.add(" $str2".toSpannableString(Color.RED))
+                sequence = sequence.add(" $str2".toColoredSpanned("#dc3e7f"))
                 secondStrOccurrence++
             } else if (i % int1 == 0) {
-                sequence = sequence.add(" $str1".toSpannableString(Color.BLUE))
+                sequence = sequence.add(" $str2".toColoredSpanned("#ff1515"))
                 firstStrOccurrence++
             } else {
-                sequence = sequence.add(" $i".toSpannableString(Color.WHITE))
+                sequence = sequence.add(" $i".toColoredSpanned("#ffffff"))
             }
-            setResultProgressingInMain("${i.percent(limit)}% Processing .. $i from $limit")
+
+            if (i % 1000 == 0)
+                setResultProgressingInMain("${i.percent(limit)}% Processing .. $i from $limit")
         }
 
         return Output(
-            sequence.trim(),
+            sequence.trim().toHtmlFormat(),
             firstStrOccurrence,
             secondStrOccurrence,
             concatStrOccurrence
         )
     }
+
 
     private fun setResultLiveDataInMain(output: Output) {
         viewModelScope.launch {
@@ -125,7 +178,7 @@ class MainViewModel : ViewModel() {
 
     private fun checkLimit(limit: Int) {
         CoroutineScope(Dispatchers.Main).launch {
-            if (limit > 30000) {
+            if (limit > BIG_NUMBER) {
                 warningLiveData.value = FizzBuzzWarning.VERY_BIG_LIMIT
             }
         }
@@ -152,6 +205,10 @@ class MainViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         job?.cancel()
+    }
+
+    companion object {
+        const val BIG_NUMBER = 30000
     }
 
 }

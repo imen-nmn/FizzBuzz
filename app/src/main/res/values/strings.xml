@@ -8,5 +8,5 @@
     <string name="hint_second_string">Str 2</string>
     <string name="launch_result_text">Launch result</string>
     <string name="fill_fields_required">Please fill all the fields !!</string>
-    <string name="very_big_limit">"Very big limit &#9785; I m a phone not a server &#128549;"</string>
+    <string name="very_big_limit">"Very big limit &#9785; I should remove the coloration. I\'m a phone not a server &#128549;"</string>
 </resources>

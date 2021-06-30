@@ -4,8 +4,11 @@ import android.graphics.Color
 import android.text.SpannableString
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.inoomene.fizzbuzz.data.FizzBuzzWarning
+import com.inoomene.fizzbuzz.data.Output
 import com.inoomene.fizzbuzz.utils.add
+import com.inoomene.fizzbuzz.utils.percent
 import com.inoomene.fizzbuzz.utils.toSpannableString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,11 +23,11 @@ class MainViewModel : ViewModel() {
     var firstStringLiveData = MutableLiveData<String>()
     var secondStringLiveData = MutableLiveData<String>()
     var resultLiveData = MutableLiveData<CharSequence>()
+    var commentLiveData = MutableLiveData<CharSequence>()
     var loadingResult: MutableLiveData<Boolean> = MutableLiveData(false)
     var showResult: MutableLiveData<Boolean> = MutableLiveData(false)
     var warningLiveData: MutableLiveData<FizzBuzzWarning> = MutableLiveData()
     private var job: Job? = null
-
 
     fun onLaunchResultClicked() {
         beforeProcess()
@@ -44,16 +47,16 @@ class MainViewModel : ViewModel() {
     }
 
     private fun doProcess() {
-            job = CoroutineScope(Dispatchers.Default).launch {
-                val int1 = firstIntLiveData.value?.toIntOrNull() ?: 0
-                val int2 = secondIntLiveData.value?.toIntOrNull() ?: 0
-                val limit = limitIntLiveData.value?.toIntOrNull() ?: 0
-                val str1 = firstStringLiveData.value ?: ""
-                val str2 = secondStringLiveData.value ?: ""
-                checkLimit(limit)
-                val result = applyFizzBuzz(int1, int2, limit, str1, str2)
-                setResultLiveDataInMain(result)
-            }
+        job = CoroutineScope(Dispatchers.Default).launch {
+            val int1 = firstIntLiveData.value?.toIntOrNull() ?: 0
+            val int2 = secondIntLiveData.value?.toIntOrNull() ?: 0
+            val limit = limitIntLiveData.value?.toIntOrNull() ?: 0
+            val str1 = firstStringLiveData.value ?: ""
+            val str2 = secondStringLiveData.value ?: ""
+            checkLimit(limit)
+            val result = applyFizzBuzz(int1, int2, limit, str1, str2)
+            setResultLiveDataInMain(result)
+        }
     }
 
     private fun applyFizzBuzz(
@@ -62,36 +65,52 @@ class MainViewModel : ViewModel() {
         limit: Int,
         str1: String,
         str2: String
-    ): CharSequence {
-        var result: CharSequence = StringBuffer()
+    ): Output {
+        var sequence: CharSequence = StringBuffer()
+        var firstStrOccurrence = 0
+        var secondStrOccurrence = 0
+        var concatStrOccurrence = 0
         for (i in 1..limit) {
-            result = if (i % int1 == 0 && i % int2 == 0)
-                result.add(" $str1$str2".toSpannableString(Color.MAGENTA))
-            else if (i % int2 == 0)
-                result.add(" $str2".toSpannableString(Color.BLUE))
-            else if (i % int1 == 0)
-                result.add(" $str1".toSpannableString(Color.GREEN))
-            else
-                result.add(" $i".toSpannableString(Color.WHITE))
-
-            setResultProgressingInMain("${100 * i / limit}% Processing .. $i from $limit")
+            if (i % int1 == 0 && i % int2 == 0) {
+                sequence = sequence.add(" $str1$str2".toSpannableString(Color.GREEN))
+                concatStrOccurrence++
+            } else if (i % int2 == 0) {
+                sequence = sequence.add(" $str2".toSpannableString(Color.RED))
+                secondStrOccurrence++
+            } else if (i % int1 == 0) {
+                sequence = sequence.add(" $str1".toSpannableString(Color.BLUE))
+                firstStrOccurrence++
+            } else {
+                sequence = sequence.add(" $i".toSpannableString(Color.WHITE))
+            }
+            setResultProgressingInMain("${i.percent(limit)}% Processing .. $i from $limit")
         }
-        return result.trim()
+
+        return Output(
+            sequence.trim(),
+            firstStrOccurrence,
+            secondStrOccurrence,
+            concatStrOccurrence
+        )
     }
 
-
-    private fun setResultLiveDataInMain(result: CharSequence) {
-        CoroutineScope(Dispatchers.Main.immediate).launch {
+    private fun setResultLiveDataInMain(output: Output) {
+        viewModelScope.launch {
             showResult.value = true
-            resultLiveData.value = result
+            resultLiveData.value = output.resultText
+            commentLiveData.value = displayStatistic(
+                output.firstStrOccurrence,
+                output.secondStrOccurrence,
+                output.concatStrOccurrence
+            )
             loadingResult.value = false
         }
     }
 
     private fun setResultProgressingInMain(progress: String) {
-        CoroutineScope(Dispatchers.Main.immediate).launch {
+        viewModelScope.launch {
             showResult.value = true
-            resultLiveData.value = SpannableString(progress)
+            commentLiveData.value = SpannableString(progress)
         }
     }
 
@@ -106,15 +125,34 @@ class MainViewModel : ViewModel() {
 
     private fun checkLimit(limit: Int) {
         CoroutineScope(Dispatchers.Main).launch {
-            if (limit > 40000) {
+            if (limit > 30000) {
                 warningLiveData.value = FizzBuzzWarning.VERY_BIG_LIMIT
             }
         }
+    }
+
+    private fun displayOccurrence(key: String?, occurrence: Int, total: Int?): String {
+        return "${total?.let { occurrence.percent(it) }}% of $key : $occurrence from $total in total "
+    }
+
+    private fun displayStatistic(
+        firstNumber: Int,
+        secondNumber: Int,
+        concatNumber: Int
+    ): CharSequence {
+        val limit = limitIntLiveData.value?.toInt()
+        val firstStr = firstStringLiveData.value
+        val secondStr = secondStringLiveData.value
+        val firstStatistic = displayOccurrence(firstStr, firstNumber, limit)
+        val secondStatistic = displayOccurrence(secondStr, secondNumber, limit)
+        val concatStatistic = displayOccurrence("$firstStr$secondStr", concatNumber, limit)
+        return "$firstStatistic\n\n$secondStatistic\n\n$concatStatistic"
     }
 
     override fun onCleared() {
         super.onCleared()
         job?.cancel()
     }
+
 }
 

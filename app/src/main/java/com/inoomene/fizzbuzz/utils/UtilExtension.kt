@@ -18,6 +18,9 @@ fun String.toSpannableString(@ColorInt colorInt : Int): SpannableString{
     return spannableString
 }
 
+fun Int.percent(total: Int) : Int{
+    return this*100/total
+}
 
  fun CharSequence.add(other: Spannable): CharSequence{
     return SpannableStringBuilder(this).append(other)

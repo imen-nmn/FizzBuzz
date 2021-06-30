@@ -26,11 +26,12 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding : MainFragmentBinding =  DataBindingUtil.inflate(
+        val binding: MainFragmentBinding = DataBindingUtil.inflate(
             inflater,
             R.layout.main_fragment,
             container,
-            false)
+            false
+        )
         binding.lifecycleOwner = this
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         binding.mainViewModel = viewModel
@@ -53,10 +54,13 @@ class MainFragment : Fragment() {
     }
 
     private fun showSnackBar(msg: String) {
-        val snackBar = view?.let { Snackbar.make(requireContext(),
-            it,
-            msg,
-            Snackbar.LENGTH_INDEFINITE)
+        val snackBar = view?.let {
+            Snackbar.make(
+                requireContext(),
+                it,
+                msg,
+                Snackbar.LENGTH_INDEFINITE
+            )
         }
         snackBar?.setAction(android.R.string.ok) {
             snackBar.dismiss()

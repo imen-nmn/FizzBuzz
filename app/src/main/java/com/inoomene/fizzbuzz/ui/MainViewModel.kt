@@ -128,7 +128,7 @@ class MainViewModel : ViewModel() {
                 sequence = sequence.add(" $str2".toColoredSpanned("#dc3e7f"))
                 secondStrOccurrence++
             } else if (i % int1 == 0) {
-                sequence = sequence.add(" $str2".toColoredSpanned("#ff1515"))
+                sequence = sequence.add(" $str1".toColoredSpanned("#ff1515"))
                 firstStrOccurrence++
             } else {
                 sequence = sequence.add(" $i".toColoredSpanned("#ffffff"))
